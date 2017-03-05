@@ -52,16 +52,12 @@ public class DatabaseLoader implements ApplicationRunner {
         .forEach(i -> {
           String recipeName = recipeTemplates[i % random(recipeTemplates.length)];
           Recipe r = new Recipe(recipeName, Category.values()[random(Category.values().length)], random(60), random(120));
-
-          for (int j = 0; j < random(userList.size()); j++) {
-            r.addAdministrator(userList.get(j));
-          }
-          Collections.shuffle(userList); // excludes users duplications in the room
+          r.addAdministrator(userList.get(random(userList.size())));
 
           IntStream.rangeClosed(0, random(ingredientTemplates.length))
               .forEach(e -> {
                 String ingredientName = ingredientTemplates[e % ingredientTemplates.length];
-                String ingredientCondition = ingredientConditionTemplates[e % ingredientConditionTemplates.length];
+                String ingredientCondition = ingredientConditionTemplates[random(ingredientConditionTemplates.length)];
                 Ingredient ingredient = new Ingredient(ingredientName, ingredientCondition, random(10), Measurement.values()[random(Measurement.values().length)]);
                 r.addIngredient(ingredient);
               });

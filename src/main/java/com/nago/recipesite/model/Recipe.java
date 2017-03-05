@@ -37,6 +37,7 @@ public class Recipe extends BaseEntity {
   }
 
   public Recipe(String name, Category category, int preparationTime, int cookTime) {
+    this();
     this.name = name;
     this.category = category;
    // this.image = image;
