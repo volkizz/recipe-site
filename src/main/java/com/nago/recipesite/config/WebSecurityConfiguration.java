@@ -1,4 +1,4 @@
-package com.nago.recipesite.core;
+package com.nago.recipesite.config;
 
 
 import com.nago.recipesite.model.User;

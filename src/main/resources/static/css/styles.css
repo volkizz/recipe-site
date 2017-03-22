@@ -107,4 +107,12 @@ button {
 .flush-right {
   float: right; }
 
+.error .error-message {
+	border: 2px solid #ac4343;
+	border-radius: 0 0 6px 6px;
+	background-color: #ac4343;
+	color: rgb(254,251,251);
+	padding: 10px;
+}
+
 /*# sourceMappingURL=styles.css.map */

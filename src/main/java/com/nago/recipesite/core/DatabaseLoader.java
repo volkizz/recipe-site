@@ -5,7 +5,6 @@ import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.enums.Category;
 import com.nago.recipesite.enums.Measurement;
 import com.nago.recipesite.model.Ingredient;
-import com.nago.recipesite.model.Instruction;
 import com.nago.recipesite.model.Recipe;
 import com.nago.recipesite.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,16 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
+
 
 @Component
 public class DatabaseLoader implements ApplicationRunner {
@@ -33,6 +37,7 @@ public class DatabaseLoader implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) throws Exception {
     List<User> userList = Arrays.asList(
+        new User("zero", "zero", "password", new String[]{"ROLE_USER"}),
         new User("admin", "Mykola", "12345", new String[]{"ROLE_USER", "ROLE_ADMIN"}),
         new User("yana", "Yana", "password", new String[]{"ROLE_USER"}),
         new User("dino", "Dino", "password", new String[]{"ROLE_USER"}),
@@ -42,6 +47,8 @@ public class DatabaseLoader implements ApplicationRunner {
     users.save(userList);
 
     String[] recipeTemplates = {"Recipe 1", "Recipe 2", "Recipe 3", "Recipe 4", "Recipe 5"};
+    String[] recipeDescriptionTemplates = {"Recipe Description 1", "Recipe Description 2", "Recipe Description 3", "Recipe Description 4", "Recipe Description 5"};
+    String [] recipeImagesTemplates = {"bloodyMary", "pasta", "salad", "soup", "steak"};
     String[] ingredientTemplates = {"Ingredient 1", "Ingredient 2", "Ingredient 3", "Ingredient 4", "Ingredient 5"};
     String[] ingredientConditionTemplates = {"Condition 1", "Condition 2", "Condition 3", "Condition 4", "Condition 5"};
     String[] instructionTemplates = {"Step 1", "Step 2", "Step 3", "Step 4", "Step 5"};
@@ -50,31 +57,49 @@ public class DatabaseLoader implements ApplicationRunner {
     List<Recipe> bunchOfRecipes = new ArrayList<>();
     IntStream.range(0, 100)
         .forEach(i -> {
+          User user = userList.get(random(userList.size()));
           String recipeName = recipeTemplates[i % random(recipeTemplates.length)];
-          Recipe r = new Recipe(recipeName, Category.values()[random(Category.values().length)], random(60), random(120));
-          r.addAdministrator(userList.get(random(userList.size())));
-
+          String recipeDescription = recipeDescriptionTemplates[i % random(recipeDescriptionTemplates.length)];
+          String recipeImage = recipeImagesTemplates[i % random(recipeImagesTemplates.length)];
+         // String recipeInstruction = instructionDescriptionTemplates[random(instructionDescriptionTemplates.length)];
+          Recipe r = new Recipe(recipeName, recipeDescription, extractBytes(recipeImage), Category.values()[random(Category.values().length)].getName(), random(60), random(120));
+          r.addInstruction(0, "Some instruction how to do some shit");
+          r.setCreatedBy(user);
           IntStream.rangeClosed(0, random(ingredientTemplates.length))
               .forEach(e -> {
                 String ingredientName = ingredientTemplates[e % ingredientTemplates.length];
                 String ingredientCondition = ingredientConditionTemplates[random(ingredientConditionTemplates.length)];
-                Ingredient ingredient = new Ingredient(ingredientName, ingredientCondition, random(10), Measurement.values()[random(Measurement.values().length)]);
+                Ingredient ingredient = new Ingredient(ingredientName, ingredientCondition, random(10), Measurement.values()[random(Measurement.values().length)].getName());
                 r.addIngredient(ingredient);
               });
-          IntStream.rangeClosed(0, random(instructionTemplates.length))
-              .forEach(a -> {
-                String instructionName = instructionTemplates[a % instructionTemplates.length];
-                String instructionDescription = instructionDescriptionTemplates[a % instructionDescriptionTemplates.length];
-                Instruction c = new Instruction(instructionName, instructionDescription);
-                r.addInstruction(c);
-              });
+          user.addOwnRecipe(r);
           bunchOfRecipes.add(r);
         });
+
+    userList.forEach(user -> IntStream.rangeClosed(0, 5).forEach(r -> {
+       Recipe recipe = bunchOfRecipes.get(random(bunchOfRecipes.size()));
+       user.addFavoriteRecipe(recipe);
+       }));
+
     recipes.save(bunchOfRecipes);
+    users.save(userList);
   }
 
   private int random(int i) {
     return (int) (Math.random() * (i - 1) + 1);
   }
 
+  private byte[] extractBytes (String imageName)  {
+    byte[] image = new byte[]{};
+    File file = new File(String.format("src/main/resources/static/mockDbImages/%s.png", imageName));
+    String absolutePath = file.getAbsolutePath();
+    Path path = Paths.get(absolutePath);
+
+    try {
+      image = Files.readAllBytes(path);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return image;
+  }
 }

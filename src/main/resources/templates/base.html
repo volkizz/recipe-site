@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="headcopy">
+    <head>
+
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width"/>
+
+        <title>My Recipes</title>
+
+        <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet'
+              type='text/css'/>
+        <link rel="stylesheet" th:href="@{/css/unsemantic-grid-responsive.css}"/>
+        <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    </head>
+</div>
+
+<body>
+<div th:fragment="headercopy"></div>
+
+<div th:fragment="navcopy">
+    <nav>
+        <a th:href="@{|/profile|}" th:text="${name}">
+            Chandra S.
+        </a>
+        &bull;
+        <a href="login.html">
+            logout
+        </a>
+    </nav>
+</div>
+
+<div th:fragment="mainiconcopy">
+    <div class="grid-100">
+        <a th:href="@{|/recipes|}">
+            <img th:src="@{/images/chefbot.svg}" height="60px"/>
+            <h1>My Recipes</h1>
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

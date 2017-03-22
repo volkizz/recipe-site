@@ -1,48 +1,59 @@
 package com.nago.recipesite.model;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nago.recipesite.core.BaseEntity;
-import com.nago.recipesite.enums.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Recipe extends BaseEntity {
   private String name;
-  private Category category;
-  //private byte[] image;
+  private String description;
+
+  @Lob
+  private byte[] image;
+
+  private String category;
 
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
   private List<Ingredient> ingredients;
 
-  @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-  private List<Instruction> instructions;
-
-  @ManyToMany
-  private List<User> administrators;
+  @ElementCollection
+  private List<String> instructions;
 
   private int preparationTime;
   private int cookTime;
 
-  protected Recipe(){
+  @ManyToOne
+  @JoinColumn(name = "created_by_id")
+  @JsonIgnore
+  private User createdBy;
+
+  public Recipe(){
     super();
     ingredients = new ArrayList<>();
     instructions = new ArrayList<>();
-    administrators = new ArrayList<>();
   }
 
-  public Recipe(String name, Category category, int preparationTime, int cookTime) {
+  public Recipe(String name, String description, byte[] image, String category, int preparationTime, int cookTime) {
     this();
     this.name = name;
+    this.description = description;
     this.category = category;
-   // this.image = image;
+    this.image = image;
     this.preparationTime = preparationTime;
     this.cookTime = cookTime;
+    instructions = new ArrayList<>();
   }
 
   public String getName() {
@@ -53,21 +64,28 @@ public class Recipe extends BaseEntity {
     this.name = name;
   }
 
-  public Category getCategory() {
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getCategory() {
     return category;
   }
 
-  public void setCategory(Category category) {
+  public void setCategory(String category) {
     this.category = category;
   }
 
-  /*public byte[] getImage() {
+  public byte[] getImage() {
     return image;
   }
-
   public void setImage(byte[] image) {
     this.image = image;
-  }*/
+  }
 
   public List<Ingredient> getIngredients() {
     return ingredients;
@@ -79,13 +97,16 @@ public class Recipe extends BaseEntity {
     ingredients.add(ingredient);
   }
 
-  public List<Instruction> getInstructions() {
+  public List<String> getInstructions() {
     return instructions;
   }
 
-  public void addInstruction(Instruction instruction) {
-    instruction.setRecipe(this);
-    instructions.add(instruction);
+  public void removeInstruction(String instruction) {
+    instructions.remove(instruction);
+  }
+
+  public void addInstruction(int step, String instruction) {
+    instructions.add(step, instruction);
   }
 
   public int getPreparationTime() {
@@ -104,11 +125,18 @@ public class Recipe extends BaseEntity {
     this.cookTime = cookTime;
   }
 
-  public List<User> getAdministrators() {
-    return administrators;
+  public User getCreatedBy() {
+    return createdBy;
   }
 
-  public void addAdministrator(User administrator) {
-    administrators.add(administrator);
+  public void setCreatedBy(User createdBy) {
+    if(createdBy != null) {
+      createdBy.addOwnRecipe(this);
+    }
+    this.createdBy = createdBy;
+  }
+
+  public boolean isFavorited(User user) {
+    return user.getFavoriteRecipes().contains(this);
   }
 }

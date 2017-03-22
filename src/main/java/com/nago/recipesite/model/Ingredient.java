@@ -3,24 +3,37 @@ package com.nago.recipesite.model;
 import com.nago.recipesite.core.BaseEntity;
 import com.nago.recipesite.enums.Measurement;
 
+import org.springframework.format.annotation.NumberFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Ingredient extends BaseEntity {
+  @NotNull
+  @Size(min = 1, max = 26)
   private String name;
+
+  @NotNull
+  @Size(min = 1, max = 26)
   private String condition;
+
+  @NotNull
+  @NumberFormat
   private double quantity;
-  private Measurement measurement;
+
+  private String measurement;
 
   @ManyToOne
   private Recipe recipe;
 
-  protected Ingredient(){
+  public Ingredient(){
     super();
   }
 
-  public Ingredient(String name, String condition, double quantity, Measurement measurement) {
+  public Ingredient(String name, String condition, double quantity, String measurement) {
     this();
     this.name = name;
     this.condition = condition;
@@ -52,11 +65,11 @@ public class Ingredient extends BaseEntity {
     this.quantity = quantity;
   }
 
-  public Measurement getMeasurement() {
+  public String getMeasurement() {
     return measurement;
   }
 
-  public void setMeasurement(Measurement measurement) {
+  public void setMeasurement(String measurement) {
     this.measurement = measurement;
   }
 
