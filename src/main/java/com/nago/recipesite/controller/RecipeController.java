@@ -1,5 +1,7 @@
 package com.nago.recipesite.controller;
 
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import com.nago.recipesite.core.FlashMessage;
 import com.nago.recipesite.dao.IngredientRepository;
 import com.nago.recipesite.dao.RecipeRepository;
@@ -60,6 +62,7 @@ public class RecipeController {
     if(user != null) {
       model.addAttribute("authenticated", user.isAdmin());
     }
+    model.addAttribute("user", user);
     model.addAttribute("allRecipes", recipeList);
     model.addAttribute("name", user().getName());
     model.addAttribute("categories", Category.values());
@@ -70,6 +73,7 @@ public class RecipeController {
   public String recipeDetail(Model model, @PathVariable Long id) throws IOException {
     Recipe recipe = recipes.findOne(id);
 
+    model.addAttribute("user", user());
     model.addAttribute("name", user().getName());
     model.addAttribute("recipe", recipe);
 
@@ -184,5 +188,20 @@ public class RecipeController {
     model.addAttribute("allRecipes", queriedRecipes);
     model.addAttribute("categories", Category.values());
     return "index";
+  }
+
+  @RequestMapping(value = "/recipes/{id}/favorite", method = POST)
+  public String toggleFavorite(@PathVariable("id") Long id, HttpServletRequest request) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    User user = users.findByUsername(auth.getName());
+    Recipe recipe = recipes.findOne(id);
+    String referer = request.getHeader("Referer");
+    if(user.getFavoriteRecipes().contains(recipe)) {
+      user.removeFavoriteRecipe(recipe);
+    } else {
+      user.addFavoriteRecipe(recipe);
+    }
+    users.save(user);
+    return "redirect:" + referer;
   }
 }

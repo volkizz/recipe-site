@@ -41,6 +41,13 @@
     </div>
 
 </div>
+
+<form th:fragment="favoritedHeart" th:action="@{|/recipes/${recipe.id}/favorite|}" method="post" style="display:inline">
+    <button type="submit" style="display: inline; background: white; padding: 0;">
+        <img th:src="${recipe.isFavorited(user)} ? @{/images/favorited.svg} : @{/images/favorite.svg}" style="height: 16px;">
+    </button>
+</form>
+
 <div th:fragment="flash" th:if="${flash != null}" class="container">
     <div class="message">
         <i class="right material-icons" data-close="">close</i>

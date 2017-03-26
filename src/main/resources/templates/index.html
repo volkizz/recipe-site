@@ -51,7 +51,7 @@
                     <p>
 
                 <span>
-                    <img src="/images/favorite.svg" height="12px"/>
+                    <form th:replace="base :: favoritedHeart"></form>
                     <a th:href="@{|/recipes/${recipe.id}|}" th:text="${recipe.name}"></a>
                 </span>
 
