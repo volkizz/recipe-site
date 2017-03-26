@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nago.recipesite.core.BaseEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
@@ -138,5 +139,58 @@ public class Recipe extends BaseEntity {
 
   public boolean isFavorited(User user) {
     return user.getFavoriteRecipes().contains(this);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Recipe recipe = (Recipe) o;
+
+    if (preparationTime != recipe.preparationTime) {return false;}
+    if (cookTime != recipe.cookTime) {
+      return false;
+    }
+    if (name != null ? !name.equals(recipe.name) : recipe.name != null) {
+      return false;
+    }
+    if (description != null ? !description.equals(recipe.description)
+        : recipe.description != null) {
+      return false;
+    }
+    if (!Arrays.equals(image, recipe.image)) {
+      return false;
+    }
+    if (category != null ? !category.equals(recipe.category) : recipe.category != null) {
+      return false;
+    }
+    if (ingredients != null ? !ingredients.equals(recipe.ingredients)
+        : recipe.ingredients != null) {
+      return false;
+    }
+    if (instructions != null ? !instructions.equals(recipe.instructions)
+        : recipe.instructions != null) {
+      return false;
+    }
+    return createdBy != null ? createdBy.equals(recipe.createdBy) : recipe.createdBy == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = name != null ? name.hashCode() : 0;
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + Arrays.hashCode(image);
+    result = 31 * result + (category != null ? category.hashCode() : 0);
+    result = 31 * result + (ingredients != null ? ingredients.hashCode() : 0);
+    result = 31 * result + (instructions != null ? instructions.hashCode() : 0);
+    result = 31 * result + preparationTime;
+    result = 31 * result + cookTime;
+    result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+    return result;
   }
 }

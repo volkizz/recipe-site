@@ -1,21 +1,14 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <div th:replace="base :: headcopy"></div>
-
 <body>
 <div th:replace="base :: navcopy"></div>
-
 <div class="grid-container">
-
     <div th:include="base :: mainiconcopy"></div>
-
     <div class="grid-100">
-
         <div class="recipes">
 
-            <form th:action="@{${action}}" method="post" th:object="${recipe}">
-
+            <form th:action="@{${action}}" enctype="multipart/form-data" method="post" th:object="${recipe}">
                 <div class="grid-100 row controls">
                     <div class="grid-50">
                         <h2 th:text="${heading}"></h2>
@@ -30,7 +23,9 @@
                     </div>
                 </div>
                 <div class="clear"></div>
-
+                <input type="number" th:field="*{id}"/>
+                <input type="text" th:if="${recipe.createdBy}" th:field="*{createdBy}"/>
+                <input type="hidden" th:field="*{version}"/>
                 <div class="grid-100 row">
                     <div class="grid-20">
                         <p class="label-spacing">
@@ -43,6 +38,20 @@
                              th:if="${#fields.hasErrors('name')}"
                              th:errors="*{recipe.name}">
                         </div>
+                        </p>
+                    </div>
+                </div>
+                <div class="grid-100 row">
+                    <div class="grid-20">
+                        <p>
+                            <label> Photo </label>
+                        </p>
+                    </div>
+                    <div class="grid-40">
+                        <p>
+                            <img th:if="${recipe.image}" th:src="@{'/recipes/'+${recipe.id}+'/image'}" height="256" width="256"/>
+                            <input type="file" name="uploadedFile" id="uploadedFile"/>
+                            <!--<img alt="Image" th:src="@{image/recipeImage}" width="250" height="250"/>-->
                         </p>
                     </div>
                 </div>
@@ -146,31 +155,22 @@
                         </p>
                     </div>
 
-                        <div class="ingredient-row">
+                    <div th:each="ingredient: *{ingredients}">
+                        <div class="ingredient-row" th:id="'ingredientNumber' + ${ingredientStat.index}">
                             <div class="prefix-20 grid-20">
+                                <input type="hidden" th:field="*{ingredients[__${ingredientStat.index}__].id}"/>
                                 <p>
-                                    <input th:field="*{ingredients[0].name}"/>
-                                    <!--<div class="error-message"
-                                         th:if="${#fields.hasErrors('ingredients[0].name')}"
-                                         th:errors="*{ingredients[0].name}"></div>-->
+                                    <input th:field="*{ingredients[__${ingredientStat.index}__].name}"/>
                                 </p>
                             </div>
                             <div class="grid-20">
                                 <p>
-                                    <input type="text"
-                                           th:field="*{ingredients[0].condition}"/>
-                                    <!--<div class="error-message"
-                                         th:if="${#fields.hasErrors('ingredients[0].condition')}"
-                                         th:errors="*{ingredients[0].condition}"></div>-->
+                                    <input th:field="*{ingredients[__${ingredientStat.index}__].condition}"/>
                                 </p>
                             </div>
                             <div class="grid-15">
                                 <p>
-                                    <input type="text"
-                                           th:field="*{ingredients[0].quantity}"/><br/>
-                                    <!-- <div class="error-message"
-                                          th:if="${#fields.hasErrors('ingredients[0].quantity')}"
-                                          th:errors="*{ingredients[0].quantity}"></div>-->
+                                    <input class="quantity" th:field="*{ingredients[__${ingredientStat.index}__].quantity}"/>
                                 </p>
                             </div>
                             <div class="grid-20">
@@ -184,12 +184,11 @@
                                     </select>
                                 </p>
                             </div>
-
                         </div>
-
-                    <div class="prefix-20 grid-80 add-row">
+                    </div>
+                    <div id="newIngredientButton" class="prefix-20 grid-80 add-row">
                         <p>
-                            <button>+ Add Another Ingredient</button>
+                            <button type="button" id="newIngredient">+ Add Another Ingredient</button>
                         </p>
                     </div>
 

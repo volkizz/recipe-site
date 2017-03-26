@@ -26,9 +26,9 @@
             Chandra S.
         </a>
         &bull;
-        <a href="login.html">
-            logout
-        </a>
+        <form th:action="@{/logout}" method="post" style="display: inline">
+            <button>Logout</button>
+        </form>
     </nav>
 </div>
 
@@ -41,6 +41,11 @@
     </div>
 
 </div>
-
+<div th:fragment="flash" th:if="${flash != null}" class="container">
+    <div class="message">
+        <i class="right material-icons" data-close="">close</i>
+        <div th:classappend="${#strings.toLowerCase(flash.status)}" th:text="${flash.message}" class="flash"></div>
+    </div>
+</div>
 </body>
 </html>

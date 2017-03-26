@@ -20,17 +20,14 @@ public class User extends BaseEntity {
 
   @JsonIgnore
   private String password;
-
   @JsonIgnore
   private String[] roles;
-
   @OneToMany(mappedBy = "createdBy")
   private List<Recipe> ownRecipes;
-
   @ManyToMany
   private List<Recipe> favoriteRecipes;
 
-  protected User() {
+  public User() {
     super();
     ownRecipes = new ArrayList<>();
     favoriteRecipes = new ArrayList<>();
@@ -115,5 +112,15 @@ public class User extends BaseEntity {
       }
     }
     return false;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    User user = (User) o;
+
+    return username.equals(user.username) && user.getId() == this.getId();
   }
 }

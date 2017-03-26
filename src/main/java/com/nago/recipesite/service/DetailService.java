@@ -8,13 +8,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Service
 public class DetailService implements UserDetailsService {
   @Autowired
   UserRepository users;
 
   @Override
+  @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User user = users.findByUsername(username);
     if(user==null){
@@ -26,4 +29,6 @@ public class DetailService implements UserDetailsService {
         AuthorityUtils.createAuthorityList(user.getRoles())
     );
   }
+
+
 }

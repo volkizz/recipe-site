@@ -1,66 +1,75 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html lang="en" xmlns:th="www.thymeleaf.com">
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <head>
 
-  <title>Sign-up | My Recipes</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
 
-  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="css/unsemantic-grid-responsive.css">
-  <link rel="stylesheet" href="css/styles.css">
+    <title>My Recipes</title>
 
-</head>
+    <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet'
+          type='text/css'/>
+    <link rel="stylesheet" th:href="@{/css/unsemantic-grid-responsive.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  </head>
+
 
 <body>
 
-  <nav>
-    <a href="signup.html">
-      sign-up
-    </a>
-    &bull;
-    <a href="login.html">
-      login
-    </a>
-  </nav>
+<nav>
+  <a th:href="@{/signup}">
+    sign-up
+  </a>
+  &bull;
+  <a th:href="@{/login}">
+    login
+  </a>
+</nav>
 
-  <div class="grid-container">
+<div class="grid-container">
 
-    <div class="grid-100">
-      <a href="index.html">
-        <h1>
-          <img src="images/chefbot.svg" height="60px">
-          <br>
-          My Recipes
-        </h1>
-      </a>
-    </div>
+<!--  <div th:replace="template :: chef-logo"></div>-->
 
-    <div class="grid-100">
-      <div class="favoriteRecipes">
+  <div class="grid-100">
+  <!--<div th:replace="template :: flash"></div>-->
+    <div class="recipes">
+      <form th:action="@{/newUser}" method="post" th:object="${user}" id="signupForm">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{version}"/>
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <input placeholder="Username"> </input>
+            <input th:field="*{name}" placeholder="Name"/>
           </p>
         </div> <div class="clear"></div>
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <input placeholder="Password" type="password"> </input>
+            <input th:field="*{username}" placeholder="Username"/>
           </p>
         </div> <div class="clear"></div>
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <input placeholder="Password Again" type="password"> </input>
+            <input th:field="*{password}" placeholder="Password" type="password" id="firstPassword"/>
           </p>
         </div> <div class="clear"></div>
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <button>Sign-up</button>
+            <input placeholder="Password Again" type="password" id="secondPassword"/>
           </p>
         </div> <div class="clear"></div>
-      </div> <!-- favoriteRecipes -->
-    </div> <!-- grid-100 -->
-  </div> <!-- grid-container -->
+        <div class="prefix-20 grid-60 suffix-20">
+          <p>
+            <button type="button" id="signupButton">Sign-up</button>
+          </p>
+        </div> <div class="clear"></div>
+      </form>
+    </div> <!-- recipes -->
+  </div> <!-- grid-100 -->
+</div> <!-- grid-container -->
+<script
+        src="https://code.jquery.com/jquery-3.1.1.js"
+        integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+        crossorigin="anonymous"></script>
+<script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

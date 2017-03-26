@@ -16,6 +16,7 @@
             <div class="grid-100 row controls">
                 <div class="grid-50">
                     <h2 th:text="${recipe.name}">Recipe name</h2>
+                    <a th:href="@{|/users/${recipe.createdBy.id}|}"><h3 th:text="|by ${recipe.createdBy.username}|">by user</h3></a>
                 </div>
                 <div class="grid-50">
                     <h2 class="flush-right">
@@ -35,7 +36,7 @@
                 </div>
                 <div class="grid-40">
                     <p>
-                        <img th:src="@{'/recipes/'+${recipe.id}+'/image'}"/>
+                        <img th:src="@{'/recipes/'+${recipe.id}+'/image'}" height="256" width="256"/>
                     </p>
                 </div>
             </div>
@@ -107,12 +108,12 @@
                         <label> Ingredients </label>
                     </p>
                 </div>
-                <div class="grid-30">
+                <div class="grid-25">
                     <p>
                         <label> Item </label>
                     </p>
                 </div>
-                <div class="grid-30">
+                <div class="grid-25">
                     <p>
                         <label> Condition </label>
                     </p>
@@ -124,13 +125,13 @@
                 </div>
 
                 <div class="ingredient-row" th:each="i : ${recipe.ingredients}">
-                    <div class="prefix-20 grid-30">
+                    <div class="prefix-20 grid-25">
                         <p th:text="${i.name}">Ingredient Name</p>
                     </div>
-                    <div class="grid-30">
+                    <div class="grid-25">
                         <p th:text="${i.condition}">ingredient Condition</p>
                     </div>
-                    <div class="grid-10 suffix-10">
+                    <div class="grid-20">
                         <p th:text="|${i.quantity} ${i.measurement}|">
                             2
                         </p>

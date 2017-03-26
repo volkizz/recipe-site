@@ -12,20 +12,11 @@ import javax.validation.constraints.Size;
 
 @Entity
 public class Ingredient extends BaseEntity {
-  @NotNull
-  @Size(min = 1, max = 26)
   private String name;
-
-  @NotNull
-  @Size(min = 1, max = 26)
   private String condition;
-
-  @NotNull
   @NumberFormat
   private double quantity;
-
   private String measurement;
-
   @ManyToOne
   private Recipe recipe;
 

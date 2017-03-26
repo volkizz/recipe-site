@@ -23,12 +23,14 @@ public class UserController {
   private UserRepository users;
 
   @RequestMapping(value = {"/profile"})
-  public String listRecipes(Model model) {
+  public String profile(Model model) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = users.findByUsername(auth.getName());
 
     List<Recipe> ownRecipes = user.getOwnRecipes();
     List<Recipe> favoriteRecipes = user.getFavoriteRecipes();
+
+    model.addAttribute("authenticated", true);
 
     model.addAttribute("ownRecipes", ownRecipes);
     model.addAttribute("favoriteRecipes", favoriteRecipes);

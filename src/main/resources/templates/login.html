@@ -1,52 +1,45 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width"/>
 
-  <title>Login | My Recipes</title>
+  <title>My Recipes</title>
 
-  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="css/unsemantic-grid-responsive.css">
-  <link rel="stylesheet" href="css/styles.css">
-
+  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet'
+        type='text/css'/>
+  <link rel="stylesheet" th:href="@{/css/unsemantic-grid-responsive.css}"/>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 
 <body>
 
-  <nav>
-    <a href="signup.html">
-      sign-up
-    </a>
-    &bull;
-    <a href="login.html">
-      login
-    </a>
-  </nav>
+<nav>
+  <a th:href="@{/signup}">
+    sign-up
+  </a>
+  &bull;
+  <a th:href="@{/login}">
+    login
+  </a>
+</nav>
 
-  <div class="grid-container">
+<div class="grid-container">
+  <div th:include="base :: mainiconcopy"></div>
 
-    <div class="grid-100">
-      <a href="index.html">
-        <h1>
-          <img src="images/chefbot.svg" height="60px">
-          <br>
-          My Recipes
-        </h1>
-      </a>
-    </div>
-
-    <div class="grid-100">
-      <div class="favoriteRecipes">
+  <div class="grid-100">
+    <div class="recipes">
+      <form th:action="@{/login}" method="post" th:object="${user}">
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <input placeholder="Username"> </input>
+            <input placeholder="Username" th:field="*{username}"/>
           </p>
         </div> <div class="clear"></div>
         <div class="prefix-20 grid-60 suffix-20">
           <p>
-            <input placeholder="Password" type="password"> </input>
+            <input placeholder="Password" type="password" th:field="*{password}"/>
           </p>
         </div> <div class="clear"></div>
         <div class="prefix-20 grid-60 suffix-20">
@@ -54,8 +47,9 @@
             <button>Login</button>
           </p>
         </div> <div class="clear"></div>
-      </div> <!-- favoriteRecipes -->
-    </div> <!-- grid-100 -->
-  </div> <!-- grid-container -->
+      </form>
+    </div> <!-- recipes -->
+  </div> <!-- grid-100 -->
+</div> <!-- grid-container -->
 </body>
 </html>
