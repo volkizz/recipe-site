@@ -120,7 +120,9 @@ public class RecipeController {
   @RequestMapping("/recipes/{id}/edit")
   public String editRecipe(Model model, @PathVariable("id") Long id) {
     Recipe recipe = recipes.findOne(id);
+    String name = user().getName();
     model.addAttribute("recipe", recipe);
+    model.addAttribute("name", name);
     model.addAttribute("action", "/recipes/" + id + "/edit");
     model.addAttribute("heading", "Edit Recipe");
     model.addAttribute("submit", "Edit");

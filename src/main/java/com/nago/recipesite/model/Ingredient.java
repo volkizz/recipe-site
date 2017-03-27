@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 public class Ingredient extends BaseEntity {
   private String name;
   private String condition;
-  @NumberFormat
   private double quantity;
   private String measurement;
   @ManyToOne
