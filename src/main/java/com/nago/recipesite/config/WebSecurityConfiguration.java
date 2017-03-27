@@ -36,23 +36,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/newUser", "/signup");
-  }
-
-  @Override
   protected void configure(HttpSecurity http) throws Exception {
-  /*  http
-        .authorizeRequests().anyRequest().authenticated()
-        .and()
-        .httpBasic()
-        .and()
-        .csrf().disable();
-
-    http.headers().frameOptions().disable();*/
     http
         .authorizeRequests()
-        .anyRequest().hasRole("USER")
+        .antMatchers("/signup").permitAll()
+        .anyRequest().permitAll()
         .and()
         .formLogin()
         .loginPage("/login")
@@ -64,7 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         .permitAll()
         .logoutSuccessUrl("/login")
         .and()
-        .csrf().ignoringAntMatchers("/newUser");
+        .csrf().disable();
 
     http.headers().frameOptions().disable();
   }

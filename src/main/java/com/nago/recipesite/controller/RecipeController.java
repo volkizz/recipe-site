@@ -59,7 +59,7 @@ public class RecipeController {
 
     List<Recipe> recipeList = (List<Recipe>) recipes.findAll();
 
-    if(user != null) {
+    if (user != null) {
       model.addAttribute("authenticated", user.isAdmin());
     }
     model.addAttribute("user", user);
@@ -80,8 +80,9 @@ public class RecipeController {
     return "detail";
   }
 
-  @RequestMapping(value = "/recipes/{id}/image", method=RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-  public @ResponseBody byte[] showImageOnId(@PathVariable("id") Long id) {
+  @RequestMapping(value = "/recipes/{id}/image", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
+  public @ResponseBody
+  byte[] showImageOnId(@PathVariable("id") Long id) {
     byte[] b = recipes.findOne(id).getImage();
     return b;
   }
@@ -100,7 +101,7 @@ public class RecipeController {
   }
 
   @RequestMapping(value = "/recipes/new", method = RequestMethod.POST)
-  public String addRecipe(Recipe recipe, @RequestParam("uploadedFile") MultipartFile file){
+  public String addRecipe(Recipe recipe, @RequestParam("uploadedFile") MultipartFile file) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = users.findByUsername(auth.getName());
     try {
@@ -129,7 +130,8 @@ public class RecipeController {
   }
 
   @RequestMapping(value = "/recipes/{id}/edit", method = RequestMethod.POST)
-  public String saveEditedRecipe(Recipe recipe, @PathVariable("id") Long id, @RequestParam("uploadedFile") MultipartFile file){
+  public String saveEditedRecipe(Recipe recipe, @PathVariable("id") Long id,
+                                 @RequestParam("uploadedFile") MultipartFile file) {
     User user = recipes.findOne(id).getCreatedBy();
 
     try {
@@ -145,26 +147,49 @@ public class RecipeController {
     return "redirect:/recipes/" + recipe.getId();
   }
 
+  @RequestMapping(path = "/recipes/{id}/delete", method = POST)
+  public String deleteRecipe(@PathVariable("id") int id) {
+    List<User> allUsers = users.findAll();
+    Recipe recipe = recipes.findOne((long) id);
+
+    for (User user : allUsers){
+      if (user.getFavoriteRecipes().contains(recipe)){
+        user.removeFavoriteRecipe(recipe);
+      }
+    }
+    recipe.getCreatedBy().removeOwnRecipe(recipe);
+    users.save(allUsers);
+    recipe.setCreatedBy(null);
+    recipes.save(recipe);
+    recipes.delete(recipe.getId());
+    return "redirect:/";
+  }
+
   @RequestMapping("/search")
-  public String search(Model model, @RequestParam(value = "searchQuery", required = false) String searchQuery, @RequestParam(value = "category", required = false) String category, @RequestParam(value="method") String method, HttpServletRequest request, HttpServletResponse response) {
+  public String search(Model model,
+                       @RequestParam(value = "searchQuery", required = false) String searchQuery,
+                       @RequestParam(value = "category", required = false) String category,
+                       @RequestParam(value = "method") String method, HttpServletRequest request,
+                       HttpServletResponse response) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = users.findByUsername(auth.getName());
     List<Recipe> queriedRecipes = new ArrayList<>();
-    if(searchQuery != null) {
+    if (searchQuery != null) {
       model.addAttribute("search", searchQuery);
-      if(method.equals("description")) {
+      if (method.equals("description")) {
         List<Recipe> namedRecipes = recipes.findByDescriptionContaining(searchQuery);
-        if(!category.equals("")) {
+        if (!category.equals("")) {
           List<Recipe> categorizedRecipes = recipes.findByCategory(category);
           queriedRecipes = namedRecipes.stream().filter(categorizedRecipes::contains).collect(
               Collectors.toList());
         } else {
           queriedRecipes = namedRecipes;
         }
-      } else if(method.equals("ingredient")) {
+      } else if (method.equals("ingredient")) {
         List<Ingredient> ingredientsList = ingredients.findByName(searchQuery);
         List<BigInteger> integers = new ArrayList<>();
-        ingredientsList.forEach(ingredient -> integers.addAll(recipes.findByIngredient(ingredient.getId())));
+        ingredientsList
+            .forEach(ingredient -> integers.addAll(recipes.findByIngredient(ingredient.getId())));
         List<Long> recipeIds = new ArrayList<>();
         integers.forEach(integer -> {
           recipeIds.add(integer.longValue());
@@ -175,9 +200,11 @@ public class RecipeController {
           Recipe recipe = recipes.findOne(id);
           searchedRecipes.add(recipe);
         });
-        if(!category.equals("")) {
+        if (!category.equals("")) {
           List<Recipe> categorizedRecipes = recipes.findByCategory(category);
-          queriedRecipes = searchedRecipes.stream().filter(categorizedRecipes::contains).collect(Collectors.toList());
+          queriedRecipes =
+              searchedRecipes.stream().filter(categorizedRecipes::contains)
+                  .collect(Collectors.toList());
         } else {
           queriedRecipes = searchedRecipes;
         }
@@ -196,7 +223,7 @@ public class RecipeController {
     User user = users.findByUsername(auth.getName());
     Recipe recipe = recipes.findOne(id);
     String referer = request.getHeader("Referer");
-    if(user.getFavoriteRecipes().contains(recipe)) {
+    if (user.getFavoriteRecipes().contains(recipe)) {
       user.removeFavoriteRecipe(recipe);
     } else {
       user.addFavoriteRecipe(recipe);

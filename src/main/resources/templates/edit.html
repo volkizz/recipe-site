@@ -23,8 +23,8 @@
                     </div>
                 </div>
                 <div class="clear"></div>
-                <input type="number" th:field="*{id}"/>
-                <input type="text" th:if="${recipe.createdBy}" th:field="*{createdBy}"/>
+                <input type="hidden" th:field="*{id}"/>
+                <input type="hidden" th:if="${recipe.createdBy}" th:field="*{createdBy}"/>
                 <input type="hidden" th:field="*{version}"/>
                 <div class="grid-100 row">
                     <div class="grid-20">
