@@ -90,8 +90,9 @@ public class RecipeController {
   @RequestMapping("/recipes/add")
   public String formNewRecipe(Model model) {
     Recipe recipe = new Recipe();
-
+    User user = user();
     model.addAttribute("recipe", recipe);
+    model.addAttribute("name", user.getName());
     model.addAttribute("action", "/recipes/new");
     model.addAttribute("heading", "New Recipe");
     model.addAttribute("submit", "Save");
@@ -154,8 +155,8 @@ public class RecipeController {
     List<User> allUsers = users.findAll();
     Recipe recipe = recipes.findOne((long) id);
 
-    for (User user : allUsers){
-      if (user.getFavoriteRecipes().contains(recipe)){
+    for (User user : allUsers) {
+      if (user.getFavoriteRecipes().contains(recipe)) {
         user.removeFavoriteRecipe(recipe);
       }
     }
@@ -213,6 +214,7 @@ public class RecipeController {
       }
 
     }
+    model.addAttribute("user", user);
     model.addAttribute("name", user().getName());
     model.addAttribute("allRecipes", queriedRecipes);
     model.addAttribute("categories", Category.values());

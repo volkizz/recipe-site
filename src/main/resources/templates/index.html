@@ -12,7 +12,6 @@
     <div class="grid-100">
 
         <div class="recipes">
-
             <div class="grid-100 row controls">
                 <form action="/search" method="get" style="margin: -5px 0 75px">
                     <div class="grid-25">
@@ -35,14 +34,17 @@
                         </select>
                     </div>
                 </form>
-                <div class="grid-30">
-                    <div class="flush-right">
-                        <a th:href="@{|/recipes/add|}">
-                            <button>+ Add Recipe</button>
-                        </a>
-                    </div>
+
+            </div>
+
+            <div class="grid-100 row controls">
+                <div class="flush-right">
+                    <form action="/recipes/add">
+                        <button style="margin-right: 10px">+ Add Recipe</button>
+                    </form>
                 </div>
             </div>
+
             <div class="clear"></div>
 
             <div class="grid-100 row addHover" th:each="recipe : ${allRecipes}">
