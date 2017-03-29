@@ -1,4 +1,4 @@
-package recipes.web;
+package com.nago.recipesite.web;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -7,9 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.model.User;
-import com.nago.recipesite.web.LoginController;
+import com.nago.recipesite.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ public class LoginControllerTest {
     private LoginController loginController;
 
     @Mock
-    private UserRepository users;
+    private UserService users;
 
     @Before
     public void setUp() throws Exception {
@@ -47,14 +46,14 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void signUpLoadsCorrectView() throws Exception {
+    public void signupLoadsCorrectView() throws Exception {
         mockMvc.perform(get("/signup"))
 
         .andExpect(view().name("signup"));
     }
 
     @Test
-    public void canSignUp() throws Exception {
+    public void canSignup() throws Exception {
         when(users.findByUsername(any(String.class))).thenReturn(null);
 
         mockMvc.perform(post("/newUser"))

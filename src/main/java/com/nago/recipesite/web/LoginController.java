@@ -1,7 +1,7 @@
 package com.nago.recipesite.web;
 
-import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.model.User;
+import com.nago.recipesite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class LoginController {
 
   @Autowired
-  private UserRepository users;
+  private UserService users;
 
   @RequestMapping("/login")
   public String login(Model model) {

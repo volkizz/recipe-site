@@ -1,19 +1,18 @@
 package com.nago.recipesite.service;
 
-import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Component
 public class DetailService implements UserDetailsService {
   @Autowired
-  UserRepository users;
+  private UserService users;
 
   @Override
   @Transactional(readOnly = true)

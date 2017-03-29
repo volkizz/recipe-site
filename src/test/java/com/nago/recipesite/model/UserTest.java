@@ -1,9 +1,8 @@
-package recipes.model;
+package com.nago.recipesite.model;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.nago.recipesite.model.User;
 import org.junit.Before;
 import org.junit.Test;
 

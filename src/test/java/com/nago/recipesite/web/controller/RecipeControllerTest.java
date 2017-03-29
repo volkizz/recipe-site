@@ -1,48 +1,12 @@
-package recipes.web.controller;
+package com.nago.recipesite.web.controller;
 
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.iterableWithSize;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-
-import com.nago.recipesite.dao.IngredientRepository;
-import com.nago.recipesite.dao.RecipeRepository;
-import com.nago.recipesite.dao.UserRepository;
-import com.nago.recipesite.enums.Category;
-import com.nago.recipesite.model.Ingredient;
-import com.nago.recipesite.model.Recipe;
-import com.nago.recipesite.model.User;
-import com.nago.recipesite.web.controller.RecipeController;
-import com.nago.recipesite.web.controller.UserHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -56,6 +20,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import com.nago.recipesite.enums.Category;
+import com.nago.recipesite.model.Ingredient;
+import com.nago.recipesite.model.Recipe;
+import com.nago.recipesite.model.User;
+import com.nago.recipesite.service.IngredientService;
+import com.nago.recipesite.service.RecipeService;
+import com.nago.recipesite.service.UserService;
+
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeControllerTest {
   private MockMvc mockMvc;
@@ -64,14 +42,13 @@ public class RecipeControllerTest {
   private RecipeController recipeController;
 
   @Mock
-  private RecipeRepository recipeService;
+  private RecipeService recipeService;
   @Mock
-  private IngredientRepository ingredientService;
-
+  private IngredientService ingredientService;
   @Mock
   private UserHandler userHandler;
   @Mock
-  private UserRepository users;
+  private UserService users;
 
   @Before
   public void setUp() throws Exception {
@@ -87,6 +64,7 @@ public class RecipeControllerTest {
     when(recipeService.findAll()).thenReturn(testRecipes());
 
     mockMvc.perform(get("/recipes"))
+
         .andExpect(model().attribute("allRecipes", iterableWithSize(2)));
     verify(recipeService).findAll();
   }
@@ -96,7 +74,39 @@ public class RecipeControllerTest {
     when(recipeService.findOne(1L)).thenReturn(testRecipe());
 
     mockMvc.perform(get("/recipes/1"))
+
         .andExpect(model().attribute("recipe", testRecipe()));
+  }
+
+  @Test
+  public void deletingRecipeIsPossible() throws Exception {
+    List<Recipe> recipes = new ArrayList<>(testRecipes());
+    when(recipeService.findOne(1L)).thenReturn(testRecipe());
+    //This is set up this way because it's how the Controller calls the method, unfortunately ->
+    when(recipeService.delete(testRecipe(), null)).then(answer -> {
+      recipes.remove(testRecipe());
+      return true;
+    });
+
+    mockMvc.perform(post("/recipes/1/delete"));
+
+    assertThat(recipes.size(), is(1));
+    verify(recipeService).delete(org.mockito.Matchers.any(Recipe.class), org.mockito.Matchers.any(User.class));
+  }
+
+  @Test
+  public void deniedUserCannotDeleteRecipe() throws Exception {
+    List<Recipe> recipes = new ArrayList<>(testRecipes());
+    when(recipeService.findOne(1L)).thenReturn(testRecipe());
+    //This is set up this way because it's how the Controller calls the method, unfortunately ->
+    when(recipeService.delete(testRecipe(), null)).then(answer -> {
+      return false;
+    });
+
+    mockMvc.perform(post("/recipes/1/delete"));
+
+
+    assertThat(recipes.size(), is(2));
   }
 
   @Test
@@ -113,8 +123,8 @@ public class RecipeControllerTest {
   @Test
   public void searchWithOnlyDescriptionWorks() throws Exception {
     when(recipeService.findByDescriptionContaining("testing")).thenReturn(testRecipes());
-    when(recipeService.findByCategory("category"))
-        .thenReturn(Collections.singletonList(testRecipe()));
+    when(recipeService.findByCategoryName("category")).thenReturn(Collections.singletonList(testRecipe()));
+
 
     mockMvc.perform(get("/search?searchQuery=testing&category=&method=description"))
 
@@ -124,12 +134,33 @@ public class RecipeControllerTest {
   @Test
   public void searchWithDescriptionAndCategoryWorks() throws Exception {
     when(recipeService.findByDescriptionContaining("testing")).thenReturn(testRecipes());
-    when(recipeService.findByCategory("category"))
-        .thenReturn(Collections.singletonList(testRecipe()));
+    when(recipeService.findByCategoryName("category")).thenReturn(Collections.singletonList(testRecipe()));
 
     mockMvc.perform(get("/search?searchQuery=testing&category=category&method=description"))
 
         .andExpect(model().attribute("allRecipes", hasSize(1)));
+  }
+
+  @Test
+  public void searchByOnlyIngredientWorks() throws Exception {
+    when(recipeService.findByIngredient("ingredient")).thenReturn(Collections.singletonList(1L));
+    when(recipeService.findOne(1L)).thenReturn(testRecipe());
+    when(recipeService.findByCategoryName("category")).thenReturn(Collections.singletonList(testRecipe()));
+
+    mockMvc.perform(get("/search?searchQuery=ingredient&category=&method=ingredient"))
+
+        .andExpect(model().attribute("allRecipes", hasSize(1)));
+  }
+
+  @Test
+  public void searchByIngredientAndCategoryWorks() throws Exception {
+    when(recipeService.findByIngredient("ingredient")).thenReturn(Collections.singletonList(1L));
+    when(recipeService.findOne(1L)).thenReturn(testRecipe());
+    when(recipeService.findByCategoryName("notCategory")).thenReturn(new ArrayList<>());
+
+    mockMvc.perform(get("/search?searchQuery=ingredient&category=notCategory&method=ingredient"))
+
+        .andExpect(model().attribute("allRecipes", hasSize(0)));
   }
 
   @Test
@@ -143,15 +174,14 @@ public class RecipeControllerTest {
   @Test
   public void addingNewRecipeSavesCorrectly() throws Exception {
     List<Recipe> recipes = new ArrayList<>(testRecipes());
-
-    doAnswer(answer -> null).when(ingredientService).save(any(ingredient.getClass()));
+    doAnswer(answer -> null).when(ingredientService).save(any());
     doAnswer(answer -> {
       recipes.add(new Recipe());
       return true;
-    }).when(recipeService).save(org.mockito.Matchers.any(Recipe.class));
+    }).when(recipeService).save(org.mockito.Matchers.any(Recipe.class), org.mockito.Matchers.any(User.class));
     doAnswer(answer -> null).when(users).save(org.mockito.Matchers.any(User.class));
 
-    mockMvc.perform(post("/recipes/add").param("category.name", "category"));
+    mockMvc.perform(post("/com/nago/recipesite/add").param("category.name", "category"));
 
     assertThat(recipes, hasSize(2));
   }

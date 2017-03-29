@@ -1,8 +1,7 @@
 package com.nago.recipesite.web.controller;
 
-import com.nago.recipesite.dao.RecipeRepository;
-import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.model.User;
+import com.nago.recipesite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
   @Autowired
-  private RecipeRepository recipes;
-
-  @Autowired
-  private UserRepository users;
+  private UserService users;
 
   @RequestMapping(value = {"/profile"})
   public String profile(Model model) {
@@ -37,7 +33,6 @@ public class UserController {
       }
     }
     model.addAttribute("user", user);
-
     return "profile";
   }
 }

@@ -1,15 +1,6 @@
-package recipes.web.controller;
+package com.nago.recipesite.web.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import com.nago.recipesite.dao.UserRepository;
-import com.nago.recipesite.model.User;
-import com.nago.recipesite.web.controller.UserController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +11,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import com.nago.recipesite.dao.UserRepository;
+import com.nago.recipesite.model.User;
+import com.nago.recipesite.service.UserService;
+import com.nago.recipesite.web.controller.UserController;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
     private MockMvc mockMvc;
@@ -28,7 +31,7 @@ public class UserControllerTest {
     private UserController userController;
 
     @Mock
-    private UserRepository users;
+    private UserService users;
 
     @Before
     public void setUp() throws Exception {

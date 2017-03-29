@@ -1,7 +1,7 @@
 package com.nago.recipesite.web.controller;
 
-import com.nago.recipesite.dao.UserRepository;
 import com.nago.recipesite.model.User;
+import com.nago.recipesite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice(basePackages = "com.nago.recipesite.web.controller")
 public class UserHandler {
     @Autowired
-    private UserRepository users;
+    private UserService users;
 
     @ExceptionHandler(AccessDeniedException.class)
     public String redirectNonUser(RedirectAttributes attributes) {

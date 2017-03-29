@@ -1,6 +1,5 @@
 package com.nago.recipesite.config;
 
-import com.nago.recipesite.core.FlashMessage;
 import com.nago.recipesite.model.User;
 import com.nago.recipesite.service.DetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +58,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   public AuthenticationFailureHandler loginFailureHandler() {
     return (request, response, exception) -> {
-      request.getSession().setAttribute("flash",
-          new FlashMessage("Incorrect username and/or password. Please try again.",
-              FlashMessage.Status.FAILURE));
       response.sendRedirect("/login");
     };
   }
