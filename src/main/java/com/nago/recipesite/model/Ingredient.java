@@ -1,14 +1,8 @@
 package com.nago.recipesite.model;
 
 import com.nago.recipesite.core.BaseEntity;
-import com.nago.recipesite.enums.Measurement;
-
-import org.springframework.format.annotation.NumberFormat;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 public class Ingredient extends BaseEntity {

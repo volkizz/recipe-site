@@ -38,6 +38,10 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE'
     compile 'net.sourceforge.nekohtml:nekohtml:1.9.22'
+
+    compile group: 'org.springframework.security', name: 'spring-security-test', version: '4.2.2.RELEASE'
+
+
     dev 'org.springframework.boot:spring-boot-devtools'
     testCompile 'junit:junit'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

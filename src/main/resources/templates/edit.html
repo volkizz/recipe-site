@@ -17,7 +17,7 @@
                         <div class="flush-right">
                             <input class="button" type="submit" th:value="${submit}"/>
                             <a th:href="@{|/recipes|}" class="secondary">
-                                <button class="secondary">Cancel</button>
+                                <button class="secondary"><a th:href="@{${redirect}}">Cancel</a></button>
                             </a>
                         </div>
                     </div>
@@ -185,10 +185,7 @@
                             <button type="button" id="newIngredient">+ Add Another Ingredient</button>
                         </p>
                     </div>
-
                 </div>
-
-
                 <div class="clear"></div>
 
                 <div class="grid-100 row">
@@ -204,7 +201,7 @@
                     </div>
 
                     <div class="step-row" th:each="instruction: *{instructions}">
-                        <div class="prefix-20 grid-80">
+                        <div class="grid-80">
                             <p>
                                 <input style="margin-left: 147px" th:field="*{instructions[__${instructionStat.index}__]}"/>
                             </p>
@@ -216,9 +213,7 @@
                             <button id="newStep" type="button">+ Add Another Step</button>
                         </p>
                     </div>
-
                 </div>
-
                 <div class="clear"></div>
 
                 <div class="row">&nbsp;</div>

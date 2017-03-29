@@ -4,14 +4,12 @@
 
 <div th:fragment="headcopy">
     <head>
-
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width"/>
 
         <title>My Recipes</title>
 
-        <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet'
-              type='text/css'/>
+        <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'/>
         <link rel="stylesheet" th:href="@{/css/unsemantic-grid-responsive.css}"/>
         <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     </head>
@@ -19,10 +17,9 @@
 
 <body>
 <div th:fragment="headercopy"></div>
-
 <div th:fragment="navcopy">
     <nav>
-        <a th:href="@{|/profile|}" th:text="${name}">
+        <a th:href="@{|/profile|}" th:text="${currentUser.name}">
             Chandra S.
         </a>
         &bull;
@@ -39,12 +36,11 @@
             <h1>My Recipes</h1>
         </a>
     </div>
-
 </div>
 
 <form th:fragment="favoritedHeart" th:action="@{|/recipes/${recipe.id}/favorite|}" method="post" style="display:inline">
     <button type="submit" style="display: inline; background: white; padding: 0;">
-        <img th:src="${recipe.isFavorited(user)} ? @{/images/favorited.svg} : @{/images/favorite.svg}" style="height: 16px;">
+        <img th:src="${recipe.isFavorited(currentUser)} ? @{/images/favorited.svg} : @{/images/favorite.svg}" style="height: 16px;">
     </button>
 </form>
 

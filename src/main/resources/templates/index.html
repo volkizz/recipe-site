@@ -6,13 +6,11 @@
 <body>
 <div th:replace="base :: navcopy"></div>
 <div class="grid-container">
-
     <div th:include="base :: mainiconcopy"></div>
-
     <div class="grid-100">
-
         <div class="recipes">
             <div class="grid-100 row controls">
+
                 <form action="/search" method="get" style="margin: -5px 0 75px">
                     <div class="grid-25">
                         <select name="category">
@@ -20,7 +18,8 @@
                             <option th:each="category: ${categories}"
                                     th:value="${category.name}"
                                     th:text="${category.name}">
-                                Breakfast</option>
+                                Breakfast
+                            </option>
                         </select>
                     </div>
                     <div class="grid-35">
@@ -44,19 +43,15 @@
                     </form>
                 </div>
             </div>
-
             <div class="clear"></div>
 
             <div class="grid-100 row addHover" th:each="recipe : ${allRecipes}">
-
                 <div class="grid-70">
                     <p>
-
-                <span>
-                    <form th:replace="base :: favoritedHeart"></form>
-                    <a th:href="@{|/recipes/${recipe.id}|}" th:text="${recipe.name}"></a>
-                </span>
-
+                        <span>
+                            <form th:replace="base :: favoritedHeart"></form>
+                            <a th:href="@{|/recipes/${recipe.id}|}" th:text="${recipe.name}"></a>
+                        </span>
                     </p>
                 </div>
 
@@ -64,8 +59,13 @@
                     <div class="grid-30">
                         <div class="flush-right">
                             <p>
-                                <a th:href="@{|/recipes/${recipe.id}/edit|}"> <img th:src="@{/images/edit.svg}" height="12px"/> Edit </a>
-                            <form th:action="@{|/recipes/${recipe.id}/delete|}" method="post"><button type="submit"><img th:src="@{/images/delete.svg}" height="12px"/> Delete </button></form>
+                                <a th:href="@{|/recipes/${recipe.id}/edit|}"> <img
+                                        th:src="@{/images/edit.svg}" height="12px"/> Edit </a>
+                            <form th:action="@{|/recipes/${recipe.id}/delete|}" method="post">
+                                <button type="submit"><img th:src="@{/images/delete.svg}"
+                                                           height="12px"/> Delete
+                                </button>
+                            </form>
                             </p>
                         </div>
                     </div>

@@ -15,7 +15,7 @@
 
             <div class="grid-100 row controls">
                 <div class="grid-100">
-                    <h2 th:text="${name}">Name</h2>
+                    <h2 th:text="${user.name}">Name</h2>
                 </div>
             </div>
             <div class="clear"></div>
@@ -35,7 +35,7 @@
             </div>
             <div class="clear"></div>
 
-            <div class="grid-100 row addHover" th:each="fRecipe : ${favoriteRecipes}">
+            <div class="grid-100 row addHover" th:each="fRecipe : ${user.favoriteRecipes}">
                 <div class="grid-70">
                     <p>
               <span>
@@ -54,7 +54,7 @@
             </div>
             <div class="clear"></div>
 
-            <div class="grid-100 row addHover" th:each="oRecipe : ${ownRecipes}">
+            <div class="grid-100 row addHover" th:each="oRecipe : ${user.ownRecipes}">
                 <div class="grid-70">
                     <p>
               <span>
@@ -69,7 +69,11 @@
                                 <a th:href="@{|/recipes/${oRecipe.id}/edit|}">
                                     <img th:src="@{/images/edit.svg}" height="12px"/>Edit
                                 </a>
-                            <form th:action="@{|/recipes/${oRecipe.id}/delete|}" method="post"><button type="submit"><img th:src="@{/images/delete.svg}" height="12px"/> Delete </button></form>
+                            <form th:action="@{|/recipes/${oRecipe.id}/delete|}" method="post">
+                                <button type="submit">
+                                    <img th:src="@{/images/delete.svg}" height="12px"/> Delete
+                                </button>
+                            </form>
                             </p>
                         </div>
                     </div>

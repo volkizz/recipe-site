@@ -6,11 +6,8 @@
 <body>
 <div th:replace="base :: navcopy"></div>
 <div class="grid-container">
-
     <div th:include="base :: mainiconcopy"></div>
-
     <div class="grid-100">
-
         <div class="recipes">
 
             <div class="grid-100 row controls">
@@ -130,12 +127,9 @@
                         <p th:text="${i.condition}">ingredient Condition</p>
                     </div>
                     <div class="grid-20">
-                        <p th:text="|${i.quantity} ${i.measurement}|">
-                            2
-                        </p>
+                        <p th:text="|${i.quantity} ${i.measurement}|">2</p>
                     </div>
                 </div>
-
             </div>
             <div class="clear"></div>
 
@@ -158,7 +152,6 @@
                         </p>
                     </div>
                 </div>
-
             </div>
             <div class="clear"></div>
 
